@@ -24,57 +24,84 @@ export default function ex03Init() {
   })
   renderer.setSize(innerWidth, innerHeight)
 
-  // Mesh
-  const geometry = new THREE.TorusGeometry(0.3, 0.15, 16, 40)
-  const material = new THREE.MeshPhysicalMaterial({
-    color: 0xff7f00,
-    // metalness: 0.6,
-    // transparent: true,
-    // opacity: 0.5,
-    // roughness: 0.4,
-    // shininess: 120,
-    clearcoat: 1,
-    clearcoatRoughness: 0.2,
-  })
-
   // 빛
   const pointLight = new THREE.PointLight(0xffffff, 1)
   pointLight.position.set(0, 2, 12)
   scene.add(pointLight)
 
+  // 텍스처 추가
+  const textureLoader = new THREE.TextureLoader()
+  const textureBaseColor = textureLoader.load(
+    '../static/images/Stylized_Stone_Floor_005_basecolor.jpg'
+  )
+  const textureNormalMap = textureLoader.load(
+    '../static/images/Stylized_Stone_Floor_005_normal.jpg'
+  )
+  const textureHeightMap = textureLoader.load(
+    '../static/images/Stylized_Stone_Floor_005_height.png'
+  )
+  const textureRoughnessMap = textureLoader.load(
+    '../static/images/Stylized_Stone_Floor_005_roughness.jpg'
+  )
+
+  // Mesh
+  const geometry = new THREE.SphereGeometry(0.4, 32, 16)
+  const material01 = new THREE.MeshStandardMaterial({
+    map: textureBaseColor,
+  })
+
+  const material02 = new THREE.MeshStandardMaterial({
+    map: textureBaseColor,
+    normalMap: textureNormalMap,
+  })
+
+  const material03 = new THREE.MeshStandardMaterial({
+    map: textureBaseColor,
+    normalMap: textureNormalMap,
+    displacementMap: textureHeightMap,
+    displacementScale: .04
+  })
+
+  const material04 = new THREE.MeshStandardMaterial({
+    map: textureBaseColor,
+    normalMap: textureNormalMap,
+    displacementMap: textureHeightMap,
+    displacementScale: .04,
+    roughnessMap: textureRoughnessMap,
+    roughness: .5
+  })
+
   // 도형 추가
-  const obj01 = new THREE.Mesh(geometry, material)
+  const obj01 = new THREE.Mesh(geometry, material01)
   obj01.position.x = -2
   scene.add(obj01)
 
-  const obj02 = new THREE.Mesh(geometry, material)
+  const obj02 = new THREE.Mesh(geometry, material02)
   scene.add(obj02)
   obj02.position.x = -1
 
-  const obj03 = new THREE.Mesh(geometry, material)
+  const obj03 = new THREE.Mesh(geometry, material03)
   scene.add(obj03)
   obj03.position.x = 0
 
-  const obj04 = new THREE.Mesh(geometry, material)
+  const obj04 = new THREE.Mesh(geometry, material04)
   scene.add(obj04)
   obj04.position.x = 1
-
-  const obj05 = new THREE.Mesh(geometry, material)
-  scene.add(obj05)
-  obj05.position.x = 2
 
   function render(time) {
     time *= 0.0005
 
     obj01.rotation.y = time
+    obj01.rotation.x = time
 
     obj02.rotation.y = time
+    obj02.rotation.x = time
 
     obj03.rotation.y = time
+    obj03.rotation.x = time
 
     obj04.rotation.y = time
-
-    obj05.rotation.y = time
+    obj04.rotation.x = time
 
     renderer.render(scene, camera)
 
